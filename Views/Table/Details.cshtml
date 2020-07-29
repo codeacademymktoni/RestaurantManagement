@@ -1,0 +1,20 @@
+﻿@model  RestorantManagement.ViewModels.TableDetailsViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <p>Table name: @Model.TableName</p>
+    <a asp-action="CloseTable" asp-route-tableId="@Model.Id" class="btn btn-primary">Close Table</a>
+
+    <ol>
+        @foreach (var product in Model.Products)
+        {
+            <li>@product.Name - @product.Price - @product.Quantity</li>
+        }
+    </ol>
+    
+</div>
+

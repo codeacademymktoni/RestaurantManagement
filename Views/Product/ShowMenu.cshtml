@@ -1,0 +1,86 @@
+﻿@model RestorantManagement.ViewModels.MenuViewModel
+
+@{
+    ViewData["Title"] = "ShowMenu";
+}
+
+<h1>ShowMenu</h1>
+
+<input hidden id="tableId" value="@Model.TableId" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <input type="number" id="@item.Id" class="quantityInput" value="0" min="0" />
+                    @*<a asp-controller="Table" asp-action="AddToTable" asp-route-productId="@item.Id" asp-route-tableId="@Model.TableId">Add to receipt</a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-primary" onclick="addToRecipt()">Add to receipt</button>
+
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" type="text/javascript"></script>
+
+    <script>
+        function addToRecipt() {
+            var quantityInputs = document.getElementsByClassName("quantityInput");
+            var tableId = document.getElementById("tableId").value;
+
+            debugger;
+            quantityInputs = Array.from(quantityInputs);
+
+            var selected = quantityInputs.filter(function (item) {
+                return item.value > 0;
+            }).map(function (item) {
+                return { id: item.id, quantity: item.value }
+            });
+
+            var model = {
+                TableId: tableId,
+                Products: selected
+            };
+
+            axios.post('/table/addtotable', model )
+                .then(function (response) {
+                    location.href = ('/table/details?tableId=' + tableId)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    </script>
+}
+
+
+

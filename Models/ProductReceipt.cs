@@ -9,18 +9,20 @@ namespace RestorantManagement.Models
     public class ProductReceipt
     {
         public int Id { get; set; }
-        [Required]
 
+        [Required]
         public int ProductId { get; set; }
-
         public Product Product { get; set; }
-        [Required]
 
+        [Required]
         public int ReceiptId { get; set; }
         public Receipt Receipt { get; set; }
-        [Required]
 
+        [Required]
         public decimal Price { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
 
     }
 }

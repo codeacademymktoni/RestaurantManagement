@@ -9,7 +9,7 @@ namespace RestorantManagement.ViewModels
     {
         public int Id { get; set; }
         public string TableName { get; set; }
-        public List<ProductViewModel> Products { get; set; }
+        public List<ProductReceiptViewModel> Products { get; set; }
 
     }
 }

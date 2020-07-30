@@ -8,13 +8,17 @@
 <div>
     <p>Table name: @Model.TableName</p>
     <a asp-action="CloseTable" asp-route-tableId="@Model.Id" class="btn btn-primary">Close Table</a>
+    <a asp-action="ShowMenu" asp-controller="Product" asp-route-tableId="@Model.Id" class="btn btn-primary">Add Product</a>
 
     <ol>
         @foreach (var product in Model.Products)
         {
-            <li>@product.Name - @product.Price - @product.Quantity</li>
+            var productFullPrice = product.Price * product.Quantity;
+
+            <li>@product.Name - @product.Price MKD X @product.Quantity : @productFullPrice</li>
         }
     </ol>
-    
+
+    <h1>Full price: @Model.Products.Sum(x => x.Price * x.Quantity)</h1>
 </div>
 

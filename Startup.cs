@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,8 +39,21 @@ namespace RestorantManagement
             });
             services.AddDbContext<RestorantManagementDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RestorantManagementDb")));
 
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                 .AddDefaultTokenProviders()
+                .AddDefaultUI()
+                .AddEntityFrameworkStores<RestorantManagementDbContext>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Auth/Login";
+                options.LoginPath = "/Auth/Login";
+            });
+
             services.AddTransient<ITableService, TableService>();
             services.AddTransient<ITableRepository, TableRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IProductsService, ProductsService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -60,7 +74,7 @@ namespace RestorantManagement
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

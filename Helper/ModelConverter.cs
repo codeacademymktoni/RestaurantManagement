@@ -30,19 +30,25 @@ namespace RestorantManagement.Helper
 
             if (openReceipt != null)
             {
-                var groups = openReceipt.ProductReceipts.Select(x => x.Product).GroupBy(x => x.Name);
-                model.Products = new List<ProductViewModel>();
-                foreach (var group in groups)
-                {
-                    model.Products.Add(new ProductViewModel() { Name = group.Key, Price = group.First().Price, Quantity = group.Count() });
-                }
+                model.Products = openReceipt.ProductReceipts.Select(x => x.ToProductReceiptViewModel()).ToList();
             }
             else
             {
-                model.Products = new List<ProductViewModel>();
+                model.Products = new List<ProductReceiptViewModel>();
             }
 
             return model;
+        }
+
+        public static ProductReceiptViewModel ToProductReceiptViewModel(this ProductReceipt receipt)
+        {
+            return new ProductReceiptViewModel
+            {
+                Id = receipt.Id,
+                Name = receipt.Product.Name,
+                Price = receipt.Price,
+                Quantity = receipt.Quantity
+            };
         }
 
         public static ProductViewModel ToProductViewModel(this Product product)

@@ -12,18 +12,26 @@ namespace RestorantManagement.Services
     public class TableService: ITableService
     {
         private readonly ITableRepository tableRepository;
+        private readonly IProductRepository productRepository;
 
-        public TableService(ITableRepository tableRepository)
+        public TableService(ITableRepository tableRepository, IProductRepository productRepository)
         {
             this.tableRepository = tableRepository;
+            this.productRepository = productRepository;
         }
 
         public void Close(int tableId)
         {
             var table = tableRepository.GetById(tableId);
+
             if (table != null)
             {
                 table.IsTaken = false;
+
+                var openReceipt = table.Receipts.FirstOrDefault(x => x.DateClosed == null);
+
+                openReceipt.DateClosed = DateTime.Now;
+
                 tableRepository.Update(table);
             }
         }
@@ -44,9 +52,43 @@ namespace RestorantManagement.Services
             if (table != null)
             {
                 table.IsTaken = true;
+
+                var receipt = new Receipt();
+
+                receipt.TableId = table.Id;
+                receipt.DateCreated = DateTime.Now;
+
+                table.Receipts.Add(receipt);
+
                 tableRepository.Update(table);
             }
+        }
 
+        public void AddProductsToTable(int tableId, List<AddToTableProductViewModel> products)
+        {
+            var productsDB = productRepository.GetAll();
+            var table = tableRepository.GetById(tableId);
+            var openReceipt = table.Receipts.FirstOrDefault(x => x.DateClosed == null);
+            var updatedProducts = new List<Product>();
+
+            foreach (var product in products)
+            {
+                var currentProduct = productsDB.FirstOrDefault(x => x.Id == product.Id);
+                currentProduct.Quantity -= product.Quantity;
+
+                openReceipt.ProductReceipts.Add(new ProductReceipt()
+                {
+                    ProductId = product.Id,
+                    ReceiptId = openReceipt.Id,
+                    Quantity = product.Quantity,
+                    Price = currentProduct.Price
+                });
+
+                updatedProducts.Add(currentProduct);
+            }
+
+            productRepository.Update(updatedProducts);
+            tableRepository.Update(table);
         }
     }
 }

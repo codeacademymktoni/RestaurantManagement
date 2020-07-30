@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestorantManagement.Helper;
 using RestorantManagement.Models;
 using RestorantManagement.Services.Interfaces;
 using RestorantManagement.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RestorantManagement.Controllers
 {
+    [Authorize]
     public class TableController : Controller
     {
         private readonly ITableService tableService;
@@ -44,7 +43,11 @@ namespace RestorantManagement.Controllers
             return RedirectToAction(nameof(Overview));
         }
 
-
-
+        [HttpPost]
+        public IActionResult AddToTable([FromBody]AddToTableViewModel model)
+        {
+            tableService.AddProductsToTable(model.TableId, model.Products);
+            return Ok();
+        }
     }
 }

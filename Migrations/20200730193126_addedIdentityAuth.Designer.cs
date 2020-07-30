@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestorantManagement.Models;
 
 namespace RestorantManagement.Migrations
 {
     [DbContext(typeof(RestorantManagementDbContext))]
-    partial class RestorantManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200730193126_addedIdentityAuth")]
+    partial class addedIdentityAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
